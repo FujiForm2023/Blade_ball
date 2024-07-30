@@ -1,5 +1,5 @@
 from network import ConnectionManager
-from game import Game
+from game import GameServer
 import structlog
 import time
 
@@ -16,7 +16,7 @@ class Server:
 
     def start(self):
         self.connection = ConnectionManager(self)
-        self.game = Game()
+        self.game = GameServer()
         self.logger.info("[Server:main:start] Server started in %s ms.", round((time.time() - self.startTime) * 1000, 2))
 
         self.connection.start()

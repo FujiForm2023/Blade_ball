@@ -1,7 +1,7 @@
 from typing_extensions import Dict, List, overload
 import random
 
-class Game():
+class GameServer():
     def __init__(self):
         self.players : Dict[str, Player] = {}
         self.ball: Ball = Ball()
