@@ -1,21 +1,18 @@
-from typing_extensions import Dict, List, overload
 import pygame
 
 
-class GameClient():
-    def __init__(self, client, synced: Dict[str, Dict]):
+class GameClient:
+    def __init__(self, client):
         self.client = client
         self.running = False
         self.width = 500
         self.height = 500
-        self.win = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("Client")
 
         self.ownPlayer: OwnClientPlayer|None = None
-        self.players: Dict[str, ClientPlayer] = {}
+        self.players: dict[str, ClientPlayer] = {}
         self.ball: ClientPlayObject|None = None
 
-    def parseSynced(self, synced: Dict[str, Dict]):
+    def parseSynced(self, synced: dict[str, dict]):
         for name, player in synced["players"].items():
             if name == self.client.name:
                 self.ownPlayer = OwnClientPlayer(player["x"], player["y"], player["size"], player["color"], name)
@@ -25,7 +22,15 @@ class GameClient():
         self.ball = ClientPlayObject(synced["ball"]["x"], synced["ball"]["y"], synced["ball"]["size"], synced["ball"]["color"])
 
     def main(self):
+        win = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption("Client")
+
         clock = pygame.time.Clock()
+
+        def redrawWindow():
+            win.fill((255,255,255))
+            self.ownPlayer.draw(win)
+            pygame.display.update()
 
         while self.running:
             clock.tick(60)
@@ -35,12 +40,7 @@ class GameClient():
                     pygame.quit()
 
             self.ownPlayer.move()
-            self.redrawWindow()
-
-    def redrawWindow(self):
-        self.win.fill((255,255,255))
-        self.ownPlayer.draw(self.win)
-        pygame.display.update()
+            redrawWindow()
 
 
 class ClientPlayObject():
@@ -50,14 +50,15 @@ class ClientPlayObject():
         self.color = color
         self.size = size
         self.velocity = 3
-
-class ClientPlayer(ClientPlayObject):
-    def __init__(self, x, y, size, color, name):
-        super().__init__(x, y, size, color)
         self.rect = (x, y, size, size)
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, self.rect)
+
+class ClientPlayer(ClientPlayObject):
+    def __init__(self, x, y, size, color, name):
+        super().__init__(x, y, size, color)
+        self.name = name
 
 class OwnClientPlayer(ClientPlayer):
     def move(self):
