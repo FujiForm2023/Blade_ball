@@ -1,7 +1,7 @@
 import socket
 
 class ConnectionManager:
-    def __init__(server):
+    def __init__(self, server):
         server.logger.info("[Server:ConnectionManager] Starting Connection Manager...")
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:

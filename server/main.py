@@ -4,7 +4,7 @@ import structlog
 INSTANCE = None
 
 class Server:
-    def __init__(host="0.0.0.0", port=4536):
+    def __init__(self, host="0.0.0.0", port=4536):
         INSTANCE = self
         self.host = host
         self.port = port
