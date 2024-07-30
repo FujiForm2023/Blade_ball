@@ -40,6 +40,7 @@ class ServerConnection(Protocol):
         packet = pickle.loads(data)
         self.logger.info('[Client:network:ServerConnection:dataReceived] Received packet: %s', packet["type"])
 
+
     def connectionMade(self):
         self.transport.write(pickle.dumps({"type": "ServerboundJoin", "name": self.client.name}))
         self.logger.info('[Client:network:ServerConnection:connectionMade] Connection estdablished.')
