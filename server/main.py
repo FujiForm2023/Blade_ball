@@ -1,16 +1,26 @@
-from network.network import ConnectionManager
+from network import ConnectionManager
+from game import Game
 import structlog
-
-INSTANCE = None
+import time
 
 class Server:
     def __init__(self, host="0.0.0.0", port=4536):
-        INSTANCE = self
+        self.startTime = time.time()
         self.host = host
         self.port = port
         self.logger = structlog.get_logger()
-        self.logger.info("[Server] Starting Server at host %s port %s", host, port)
-        self.connection = ConnectionManager(INSTANCE)
+        self.logger.info("[Server:main:init] Starting Blade Ball Server at host %s port %s", host, port)
+        self.state = "INIT"
+
+        self.start()
+
+    def start(self):
+        self.connection = ConnectionManager(self)
+        self.game = Game()
+        self.logger.info("[Server:main:start] Server started in %s ms.", round((time.time() - self.startTime) * 1000, 2))
+
+        self.connection.start()
 
 if __name__ == "__main__":
-    Server()
+    s = Server()
+    s.start()
